@@ -1,0 +1,8 @@
+<% layout('layout') %>
+
+<h1 class="mb-4"><%= board.title %></h1>
+<p><%= board.content %></p>
+<% if (board.image) { %>
+    <img src="/uploads/<%= board.image %>" alt="이미지" class="img-thumbnail">
+<% } %>
+<a href="/boards" class="btn btn-secondary">목록으로</a>

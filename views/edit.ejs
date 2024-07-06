@@ -1,0 +1,23 @@
+<% layout('layout') %>
+
+<h1 class="mb-4">게시글 수정</h1>
+<form action="/boards/<%= board.id %>?_method=PUT" method="POST" enctype="multipart/form-data">
+    <div class="mb-3">
+        <label for="title" class="form-label">제목</label>
+        <input type="text" id="title" name="title" class="form-control" value="<%= board.title %>" required>
+    </div>
+    <div class="mb-3">
+        <label for="content" class="form-label">내용</label>
+        <textarea id="content" name="content" class="form-control" rows="5" required><%= board.content %></textarea>
+    </div>
+    <div class="mb-3">
+        <label for="image" class="form-label">이미지</label>
+        <input type="file" id="image" name="image" class="form-control">
+        <input type="hidden" name="currentImage" value="<%= board.image %>">
+        <% if (board.image) { %>
+            <img src="/uploads/<%= board.image %>" alt="이미지" class="img-thumbnail mt-2" style="max-width: 200px;">
+        <% } %>
+    </div>
+    <button type="submit" class="btn btn-primary">수정</button>
+    <a href="/boards" class="btn btn-secondary">목록으로 돌아가기</a>
+</form>
