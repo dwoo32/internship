@@ -3,6 +3,7 @@ const session = require('express-session');
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
 const path = require('path');
+const ejsLayouts = require('express-ejs-layouts');
 
 const app = express();
 
@@ -11,7 +12,7 @@ const boardRouter = require('./routes/board');
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
-
+app.use(ejsLayouts); // 추가
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(methodOverride('_method'));
@@ -35,9 +36,6 @@ function checkAuth(req, res, next) {
 
 app.use('/user', userRouter);
 app.use('/boards', checkAuth, boardRouter);
-
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
 
 app.get('/', (req, res) => {
     res.redirect('/user/login');
