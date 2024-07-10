@@ -1,28 +1,48 @@
 const express = require('express');
-const path = require('path');
+const session = require('express-session');
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
-const ejsMate = require('ejs-mate');
+const path = require('path');
 
 const app = express();
-const port = 3000;
 
-app.engine('ejs', ejsMate); // ejs-mate 사용 설정
+const userRouter = require('./routes/user');
+const boardRouter = require('./routes/board');
+
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+app.use(session({
+    secret: 'your_secret_key',
+    resave: false,
+    saveUninitialized: true
+}));
+
+// 로그인 상태 확인 미들웨어
+function checkAuth(req, res, next) {
+    if (req.session.user) {
+        next();
+    } else {
+        res.redirect('/user/login');
+    }
+}
+
+app.use('/user', userRouter);
+app.use('/boards', checkAuth, boardRouter);
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+
 app.get('/', (req, res) => {
-    res.redirect('/boards');
+    res.redirect('/user/login');
 });
 
-const boardRouter = require('./routes/board');
-app.use('/boards', boardRouter);
-
-app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
+app.listen(3000, () => {
+    console.log('Server running at http://localhost:3000');
 });

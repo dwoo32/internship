@@ -1,23 +1,48 @@
-<% layout('layout') %>
-
-<h1 class="mb-4">게시글 목록</h1>
-<a href="/boards/new" class="btn btn-primary mb-4">새 게시글 작성</a>
-<ul class="list-group">
-    <% boards.forEach(board => { %>
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-            <a href="/boards/<%= board.id %>" 
-               class="board-title" 
-               data-bs-toggle="popover" 
-               data-bs-html="true" 
-               data-bs-content="<% if (board.image) { %> <img src='/uploads/<%= board.image %>' alt='이미지' class='img-thumbnail' style='max-width: 200px;'> <% } %>">
-                <%= board.title %>
-            </a>
-            <span>
-                <a href="/boards/<%= board.id %>/edit" class="btn btn-warning btn-sm">수정</a>
-                <form action="/boards/<%= board.id %>?_method=DELETE" method="POST" style="display:inline;">
-                    <button type="submit" class="btn btn-danger btn-sm">삭제</button>
-                </form>
-            </span>
-        </li>
-    <% }) %>
-</ul>
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title %></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .board-item {
+            position: relative;
+        }
+        .board-item img {
+            max-width: 150px;
+            max-height: 150px;
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 100%;
+            margin-left: 10px;
+        }
+        .board-item:hover img {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <h1 class="mb-4">게시글 목록</h1>
+        <ul class="list-group">
+            <% boards.forEach(board => { %>
+                <li class="list-group-item board-item">
+                    <h2><%= board.title %></h2>
+                    <p><%= board.content %></p>
+                    <p>작성자: <%= board.nickname %></p>
+                    <% if (board.image) { %>
+                        <img src="/uploads/<%= board.image %>" alt="게시글 이미지" class="img-thumbnail">
+                    <% } %>
+                    <a href="/boards/<%= board.id %>" class="btn btn-primary mt-2">보기</a>
+                    <a href="/boards/<%= board.id %>/edit" class="btn btn-secondary mt-2">수정</a>
+                    <form action="/boards/<%= board.id %>?_method=DELETE" method="POST" style="display:inline;">
+                        <button type="submit" class="btn btn-danger mt-2">삭제</button>
+                    </form>
+                </li>
+            <% }) %>
+        </ul>
+        <a href="/boards/new" class="btn btn-success mt-4">새 게시글 작성</a>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
