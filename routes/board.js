@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const pool = require('../models/db');
+const db = require('../models/db');
 const multer = require('multer');
 const path = require('path');
 
@@ -36,11 +37,20 @@ router.post('/', upload.single('image'), async (req, res) => {
     res.redirect('/boards');
 });
 
-// 게시글 보기
+//게시글 보기
 router.get('/:id', async (req, res) => {
-    const [rows] = await pool.query('SELECT * FROM boards WHERE id = ?', [req.params.id]);
-    res.render('show', { title: '게시글 보기', board: rows[0] });
+    try {
+        const [rows] = await db.query('SELECT * FROM boards WHERE id = ?', [req.params.id]);
+        const board = rows[0];
+        res.render('show', { title: '게시글 보기', board });
+    } catch (error) {
+        console.error(error);
+        res.status(500).render('error', { title: '서버 에러' }); // 수정된 부분
+    }
 });
+
+
+
 
 // 게시글 수정 폼
 router.get('/:id/edit', async (req, res) => {

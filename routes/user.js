@@ -5,7 +5,7 @@ const pool = require('../models/db');
 
 // 회원가입 폼
 router.get('/register', (req, res) => {
-    res.render('register', { title: '회원가입' });
+    res.render('register', { title: '회원가입', user: req.session.user });
 });
 
 // 회원가입 처리
@@ -18,7 +18,7 @@ router.post('/register', async (req, res) => {
 
 // 로그인 폼
 router.get('/login', (req, res) => {
-    res.render('login', { title: '로그인', error: null });
+    res.render('login', { title: '로그인', error: null, user: req.session.user });
 });
 
 // 로그인 처리
@@ -32,10 +32,10 @@ router.post('/login', async (req, res) => {
             req.session.user = user;
             res.redirect('/boards');
         } else {
-            res.render('login', { title: '로그인', error: '비밀번호가 일치하지 않습니다.' });
+            res.render('login', { title: '로그인', error: '비밀번호가 일치하지 않습니다.', user: req.session.user });
         }
     } else {
-        res.render('login', { title: '로그인', error: '사용자를 찾을 수 없습니다.' });
+        res.render('login', { title: '로그인', error: '사용자를 찾을 수 없습니다.', user: req.session.user });
     }
 });
 
